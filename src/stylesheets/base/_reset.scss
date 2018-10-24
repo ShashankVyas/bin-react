@@ -1,0 +1,42 @@
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body{
+  margin: 0;
+  padding: 0;
+  font-family: 'Inter UI', Helvetica, Arial, sans-serif;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+  font-weight: 400;
+  font-size: 18px;
+}
+input,
+button{
+  font-family: inherit;
+  font-size: inherit;
+}
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+input[type="number"] {
+    -moz-appearance: textfield;
+}
+strong{
+  font-weight: 700;
+}
+ul{
+  list-style-type: none;
+  li{
+    display: inline-block;
+  }
+}
+
+a{
+  text-decoration: none;
+}

@@ -1,0 +1,322 @@
+import React from "react";
+import moment from "moment";
+import TimePicker from 'rc-time-picker';
+import welcomeImage from "../images/welcome.svg";
+import spinner from "../images/spinner.svg";
+import { GOOGLE_API_KEY, CALENDAR_ID, CLIENT_ID, SCOPES } from "../config.js";
+
+var DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"];
+const ROUNDING = 30 * 60 * 1000;
+const format = 'h:mm a';
+
+
+class Home extends React.Component {
+
+  constructor(props) {
+    super(props);
+    this.state = {
+  		time: moment().format("dddd, Do MMMM, YYYY h:mm A"),
+      events: [],
+      isBusy: false,
+      isEmpty: false,
+      showAuthButton: true,
+      showSignOutButton: false,
+      isLoading: true,
+      curApp: "home"
+    };
+   // this.signinChanged  = this.signinChanged.bind(this);
+    this.initClient = this.initClient.bind(this);
+  //  this.handleClick = this.handleClick.bind(this);
+    this.addEvent = this.addEvent.bind(this);
+    this.setPage = this.setPage.bind(this);
+    this.setStart = this.setStart.bind(this)
+    this.setEnd = this.setEnd.bind(this)
+  }
+
+  handleClientLoad() {
+  	const script = document.createElement("script");
+    script.src = "https://apis.google.com/js/client.js";
+    window.gapi.load('client:auth2', this.initClient);
+  }
+
+  initClient() {
+    window.gapi.client.init({
+discoveryDocs: DISCOVERY_DOCS,
+clientId: CLIENT_ID,
+scope: SCOPES
+}).then(function () {
+  console.log(window.gapi);
+  });
+//window.gapi.auth2.getAuthInstance().isSignedIn.listen(this.signinChanged);
+//this.signinChanged(window.gapi.auth2.getAuthInstance().isSignedIn.get());
+}
+
+setPage = async page => {
+	if (page === "add"){
+		this.setState({
+startTime: moment(),
+endTime:   moment(Math.ceil((+moment().add(15, 'minutes')) / ROUNDING) * ROUNDING)
+})
+}
+
+await this.setState({
+curApp:page
+});
+}
+
+setStart = async val => {
+	await this.setState({
+startTime:val
+});
+}
+
+setEnd = async val => {
+	await this.setState({
+endTime:val
+});
+}
+
+tick = () => {
+	let time = moment().format("dddd, Do MMMM, h:mm A");
+	this.setState({
+time: time
+});
+};
+
+
+addEvent() {
+	var event = {
+		'summary': 'Quick Meeting',
+		'description': 'Quick Meeting booked by SAM',
+		'start': {
+			'dateTime': moment(this.state.startTime).toISOString(),
+			'timeZone': 'America/Los_Angeles'
+		},
+		'end': {
+			'dateTime': moment(this.state.endTime).toISOString(),
+			'timeZone': 'America/Los_Angeles'
+		},
+		'reminders': {
+			'useDefault': false,
+		}
+	};
+
+	var request = window.gapi.client.calendar.events.insert({
+			'calendarId': CALENDAR_ID,
+			'resource': event
+			});
+
+	request.execute(function(event) {
+			console.log('Event created: ' + event.htmlLink);
+			console.log(event);
+
+			});
+
+	this.setState({
+curApp: "home"
+})
+
+this.getEvents();
+
+}
+
+getEvents() {
+	let that = this;
+	function start() {
+		window.gapi.client
+			.init({
+apiKey: GOOGLE_API_KEY
+})
+.then(function() {
+		return window.gapi.client.request({
+path: `https://www.googleapis.com/calendar/v3/calendars/${CALENDAR_ID}/events?maxResults=11&orderBy=startTime&singleEvents=true&timeMin=${moment().toISOString()}&timeMax=${moment()
+.endOf("day")
+.toISOString()}`
+});
+		})
+.then(
+		response => {
+		let events = response.result.items;
+		let sortedEvents = events.sort(function(a, b) {
+				return (
+						moment(b.start.dateTime).format("YYYYMMDD") -
+						moment(a.start.dateTime).format("YYYYMMDD")
+				       );
+				});
+		if (events.length > 0) {
+		that.setState(
+				{
+events: sortedEvents,
+isLoading: false,
+isEmpty: false
+},
+() => {
+that.setStatus();
+}
+);
+		} else {
+			that.setState({
+events: [],
+isBusy: false,
+isEmpty: true,
+isLoading: false
+});
+}
+},
+	function(reason) {
+		console.log(reason);
+	}
+);
+}
+window.gapi.load("client", start);
+}
+
+setStatus = () => {
+	let now = moment();
+	let events = this.state.events;
+	for (var e = 0; e < events.length; e++) {
+		var eventItem = events[e];
+		if (
+				moment(now).isBetween(
+					moment(eventItem.start.dateTime),
+					moment(eventItem.end.dateTime)
+					)
+		   ) {
+			this.setState({
+isBusy: true,
+});
+return false;
+} else {
+	this.setState({
+isBusy: false
+});
+}
+}
+};
+
+render(){
+
+  const { time, events } = this.state;
+
+  let eventsList = events.map(function(event) {
+      return (
+          <div className="eventContainer">
+          <a
+          className="list-group-item"
+          href={event.htmlLink}
+          target="_blank"
+          key={event.id}
+          >
+          {event.summary}{" "}
+          <span className="badge">
+          {moment(event.start.dateTime).format("h:mm a")},{" "}
+          {moment(event.end.dateTime).diff(
+              moment(event.start.dateTime),
+              "minutes"
+              )}{" "}
+          minutes, {moment(event.start.dateTime).format("MMMM Do")}{" "}
+
+          </span>
+          </a>
+          </div>
+
+          );
+  });
+
+  let addState = (
+      <div className="appletContainer">
+
+      <img src="https://images-na.ssl-images-amazon.com/images/I/4136KhxLISL._SY355_.jpg"></img>
+
+      <h3>
+      Book now for {moment(this.state.endTime).diff(this.state.startTime, 'minutes') + 1} minutes
+      </h3>
+
+      <div className="startTimeContainer">
+      <TimePicker
+      id="startTime"
+      showSecond={false}
+      value={this.state.startTime}
+      onChange={this.setStart}
+      format={format}
+      use12Hours
+      />
+      </div>
+
+      <div className="endTimeContainer">
+      <TimePicker
+      id="endTime"
+      showSecond={false}
+      value={this.state.endTime}
+      onChange={this.setEnd}
+      format={format}
+      use12Hours
+        />
+        </div>
+
+        <div>
+
+        <a
+        className="primary-add"
+        href="javascript:void(0);"
+        onClick={this.addEvent}>
+        Submit
+        </a>
+
+        </div>
+        </div>
+
+        );
+
+      let emptyState = (
+          <div className="appletContainer">
+          <img src={welcomeImage} alt="Welcome" />
+          <h3>
+          No meetings are scheduled for the day. Create one by clicking the plus
+          button.
+          </h3>
+          </div>
+          );
+
+          let loadingState = (
+    					<div className="loading">
+    					<img src={spinner} alt="Loading..." />
+    					</div>
+    					);
+
+        return(
+           <div className="appContainer">
+			 		<div
+			 		className={
+			 		this.state.isBusy ? "current-status busy" : "current-status open"
+			 		}
+			 		>
+			 		<div>
+			 		<h1 id="currentStatus">{this.state.isBusy ? "BUSY" : "OPEN"}</h1>
+			 		<div className="current-time">{time}</div>
+			 		</div>
+			 		</div>
+
+			 		<div className="upcoming-meetings">
+
+			 		{events.length > 0 && <h1>Upcoming Meetings</h1>}
+			 <div className="list-group">
+
+			 {this.state.isEmpty  && emptyState}
+			 {events.length > 0   && eventsList}
+			 </div>
+
+			 {this.state.isBusy === false ? <a className="primary-cta" href="javascript:void(0);"
+			 	onClick={()=>this.setPage("add")}>+</a> : null}
+
+			 </div>
+			 	</div>
+
+
+        );
+
+}
+
+}
+
+export default Home;
