@@ -1,0 +1,26 @@
+<!doctype html>
+<html class="no-js" lang="">
+
+<script src="https://apis.google.com/js/platform.js?onload=triggerGoogleLoaded"></script>
+<script src="https://apis.google.com/js/platform.js?onload=renderButton" async defer></script>
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <title>Welcome to SAM</title>
+  <meta name="description" content="A simple web app to book meeting rooms inside an office.">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" >
+  <link rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Font+Name">
+	<meta name="google-signin-client_id" content="441905058576-3inm4of31gtqr2rdcb4k7np5jogmr12g.apps.googleusercontent.com">
+</head>
+
+<body>
+  <div id="app-loader">
+    <h1 style="text-align: center; padding: 180px 0; color: #ccc; font-family: Arial, Helvetica, sans-serif">Loading...</h1>
+  </div>
+  <div id="root"></div>
+</body>
+
+</html>
