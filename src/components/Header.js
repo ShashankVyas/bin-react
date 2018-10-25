@@ -13,7 +13,7 @@ export const Header = (props) => {
 
 				<div>
 					<ul>
-					<NavLink exact to = "/" className="unselected" activeClassName="selected">
+					<NavLink exact to = "/" className="logo" activeClassName="selected">
 						<i className="fa fa-home"></i> SAM
 					</NavLink>
 
@@ -43,7 +43,7 @@ export const Header = (props) => {
 					</NavLink>
 
 					<User />
-						
+
 					</ul>
 				</div>
 			</nav>

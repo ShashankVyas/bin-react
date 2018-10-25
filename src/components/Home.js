@@ -1,11 +1,12 @@
 import React from "react";
 import { NavLink } from 'react-router-dom';
 import Popup from "reactjs-popup";
-
+import welcomeImage from "../images/Welcome.png";
 import axios from 'axios';
 import moment from "moment";
 
 import Book from "./Book";
+import data from "../data/content.json";
 import spinner from "../images/spinner.svg";
 import { GOOGLE_API_KEY, CALENDAR_ID} from "../config.js";
 
@@ -106,14 +107,14 @@ class Home extends React.Component {
       }
     }
   };
-  
+
   endMeeting() {
 		let postData = {
 			'end': {
 				'dateTime': moment().toISOString()
 			}
-		};  	
-		
+		};
+
 		window.gapi.client.calendar.events.patch({
 		  "calendarId": CALENDAR_ID,
 		  "eventId": this.state.currentEventID,
@@ -130,7 +131,7 @@ class Home extends React.Component {
 		render(){
 
 			  const { time, events } = this.state;
-			  
+
 			  let eventsList = events.map(function(event) {
 			      return (
 
@@ -154,12 +155,22 @@ class Home extends React.Component {
 			      );
 			  });
 
+        const displayMessage = ({data}) => {
+          const messages = [];
+          for (let key in data) {
+             if(moment().second() > 0 )
+             {
+               messages.push(<li>{key}: {data[key]}</li>);
+             }
+           }
+
+           return <div className="mess">{messages}</div>;
+        };
+
 	      let emptyState = (
 	          <div className="appletContainer" id="empty-box" opacity={this.state.isEmpty ? 1 : 0}>
-              {/*<img src={welcomeImage} alt="Welcome" />*/}
-		          <h3>
-			          No more meetings are scheduled for the day. <u>Please sign-in with your Google Account to create a new meeting</u>
-		          </h3>
+              <img src={welcomeImage} alt="Welcome" />
+		          <h3>{displayMessage}</h3>
 	          </div>
 	      );
 

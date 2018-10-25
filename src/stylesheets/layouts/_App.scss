@@ -143,8 +143,8 @@ body{
 		height: 100vh;
     width: 50%;
 		position: fixed;
-		right: 400px;
-		top: 300px;
+		right: 200px;
+		top: 150px;
     padding: 10px;
     display: inline-block;
 		flex-direction: column;
@@ -161,6 +161,9 @@ body{
         font-weight: 400;
 				color: black;
     }
+		@media only screen and (max-width: 1200px){
+				display: none;
+		}
 
 }
 
@@ -185,8 +188,9 @@ body{
 
 .topnav .logo{
 
-	font-family: 'Sonsie One', cursive;
+	font-family: 'Montserrat', serif;
 	font-size: 30px;
+	font-weight: 600;
 
 }
 
