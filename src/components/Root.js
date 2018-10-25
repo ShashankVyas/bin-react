@@ -7,16 +7,18 @@ class Root extends React.Component {
 	render(){
 		return(
 				<div className="topnav" id="myTopnav">
-				<div>
-				<div>
-				<Header />
-				</div>
-				</div>
-				<div>
-				<div>
-				{this.props.children}
-				</div>
-				</div>
+					<div>
+						<div>
+							<Header />
+						</div>
+					</div>
+					
+					<div>
+						<div>
+						{this.props.children}
+						</div>
+					</div>
+					
 				</div>
 		      );
 
