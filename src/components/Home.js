@@ -1,5 +1,6 @@
 import React from "react";
 import { NavLink } from 'react-router-dom';
+import Popup from "reactjs-popup";
 
 import axios from 'axios';
 import moment from "moment";
@@ -7,6 +8,7 @@ import moment from "moment";
 import welcomeImage from "../images/vacancy.png";
 import spinner from "../images/spinner.svg";
 
+import Book from "./Book";
 import Header from "./Header";
 import { GOOGLE_API_KEY, CALENDAR_ID} from "../config.js";
 
@@ -29,6 +31,7 @@ class Home extends React.Component {
 
     this.clockCounter = setInterval(() => {this.ticker();}, 1000);
     this.eventCounter = setInterval(() => {this.getEvents();}, 60000);
+
   };
 
   componentWillUnmount = () => {
@@ -48,10 +51,10 @@ class Home extends React.Component {
     axios.get(`https://www.googleapis.com/calendar/v3/calendars/${CALENDAR_ID}/events?maxResults=15&orderBy=startTime&singleEvents=true&timeMin=${moment().toISOString()}&timeMax=${moment().endOf("day").toISOString()}&key=${GOOGLE_API_KEY}`)
       .then( function (response) {
   					let events = response.data.items;
- 												
-						if (events.length > 0){	
+
+						if (events.length > 0){
 							let filteredEvents = events.filter(function(item){
-							    return item.attendees[0].responseStatus === "accepted";         
+							    return item.attendees[0].responseStatus === "accepted";
 							});
               that.setState(
                 {
@@ -82,7 +85,7 @@ class Home extends React.Component {
     let now = moment();
     let events = this.state.events;
     for (var e = 0; e < events.length; e++) {
-  	
+
       let eventItem = events[e];
       if (
         now.isBetween(
@@ -111,6 +114,7 @@ class Home extends React.Component {
 
 			  let eventsList = events.map(function(event) {
 			      return (
+
 			        <a
 			          className="list-group-item"
 			          href={event.htmlLink}
@@ -125,16 +129,17 @@ class Home extends React.Component {
 			              "minutes"
 			            )}{" "}
 			            minutes, {moment(event.start.dateTime).format("MMMM Do")}{" "}
+
 			          </span>
 			        </a>
 			      );
 			  });
 
 	      let emptyState = (
-	          <div className="appletContainer">
-		          <img src={welcomeImage} alt="Welcome" />
+	          <div className="appletContainer" id="empty-box" opacity={this.state.isEmpty ? 1 : 0}>
+              {/*<img src={welcomeImage} alt="Welcome" />*/}
 		          <h3>
-			          No meetings are scheduled for the day. <u>Sign In with your Google Account to create a new meeting</u>
+			          No more meetings are scheduled for the day. <u>Please sign-in with your Google Account to create a new meeting</u>
 		          </h3>
 	          </div>
 	      );
@@ -146,25 +151,28 @@ class Home extends React.Component {
 	    	);
 
 	    	let meetingDuration = (
-					 		<span> for {moment(this.state.endTime).diff(
+              <div>
+              <span> for {moment(this.state.endTime).diff(
        									moment(this.state.time),"minutes") + 1} minutes</span>
+              <div className="current-time">{moment(time).format('llll')}</div>
+              <button
+              className="button"
+              buttontext="Submit"
+              >End Meeting</button>
+
+              </div>
 	    	)
 
-        return(				
+        return(
 	        <div className = "home-page">
-	        	
-	        	<div>
-							<Header />
-						</div>
-						
 				 		<div className={this.state.isBusy ? "current-status busy" : "current-status open"}>
 	            <div>
 						 		<h1 id="currentStatus">{this.state.isBusy ? "BUSY" : "OPEN"} </h1>
 						 		{this.state.isBusy && meetingDuration}
-						 		<div className="current-time">{moment(time).format('llll')}</div>
+
 	            </div>
 	      		</div>
-						
+
 						<div id="wk-message">
 					 		<div className="upcoming-meetings">
 					 			{events.length > 0 && <h1>Upcoming Meetings</h1>}
@@ -178,8 +186,24 @@ class Home extends React.Component {
 						</div>
 
 
-							<NavLink className="primary-cta" exact to = "/book"
-              onClick= {() => document.getElementById("wk-message").style.display ="none"} id="booker">+</NavLink>
+              <Popup trigger={<NavLink className="primary-cta" exact to = "/book"
+               id="booker">+</NavLink>}
+    						modal
+    					>
+    						{close => (
+    				      <div className="modal">
+    				        <a href="JavaScript:void(0);"
+    				        	className="close" onClick={close}>
+    				          &times;
+    				        </a>
+    				        <div className="header center-div"> Quick Book </div>
+    				        <div className="content">
+    				        	<Book />
+    				        </div>
+    				      </div>
+    				    )}
+    				  </Popup>
+
 					</div>
 				)
 		}

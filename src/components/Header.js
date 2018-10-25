@@ -1,67 +1,21 @@
 import React from "react";
-import Popup from "reactjs-popup";
+import { NavLink } from 'react-router-dom';
+import  Popup from 'reactjs-popup';
 
-import Feature from "./Feature";
-import Ticket from "./Ticket";
-import User from "./User";
-import Book from "./Book";
+import Book from './Book';
 
 export const Header = (props) => {
 
 	return (
 
-				<div className="topnav" id="myTopnav">			
-					<Popup trigger={<a href="JavaScript:void(0);">Features</a>}
-						modal
-					>
-					  {close => (
-				      <div className="modal">
-				        <a href="JavaScript:void(0);"
-				        	className="close" onClick={close}>
-				          &times;
-				        </a>
-				        <div className="header center-div"> Features </div>
-				        <div className="content">
-				        	<Feature />
-				        </div>
-				      </div>
-				    )}
-				  </Popup>
-					
-					<Popup trigger={<a href="JavaScript:void(0);">Open A Ticket</a>}
-						modal
-						>
-					  {close => (
-				      <div className="modal">
-				        <a href="JavaScript:void(0);"
-				        	className="close" onClick={close}>
-				          &times;
-				        </a>
-				        <div className="header center-div"> Open A Ticket </div>
-				        <div className="content">
-				        	<Ticket />
-				        </div>
-				      </div>
-				    )}
-				  </Popup>
-				  
-					<Popup trigger={<a href="JavaScript:void(0);">Log In</a>}
-						modal
-					>
-						{close => (
-				      <div className="modal">
-				        <a href="JavaScript:void(0);"
-				        	className="close" onClick={close}>
-				          &times;
-				        </a>
-				        <div className="header center-div"> Login </div>
-				        <div className="content">
-				        	<User />
-				        </div>
-				      </div>
-				    )}
-				  </Popup>
-				  
+			<nav>
+
+				<div>
+					<ul>
+					<NavLink exact to = "/" className="unselected" activeClassName="selected">
+						<i className="fa fa-home"></i> SAM
+					</NavLink>
+
 					<Popup trigger={<a href="JavaScript:void(0);">Book A Meeting</a>}
 						modal
 					>
@@ -76,10 +30,23 @@ export const Header = (props) => {
 				        	<Book />
 				        </div>
 				      </div>
-				    )} 	
-				  </Popup>				  				  
-					
+				    )}
+				  </Popup>
+
+					<NavLink exact to = "/ticket" className="unselected" activeClassName="selected">
+						Ticket
+					</NavLink>
+
+					<NavLink exact to = "/feature" className="unselected" activeClassName="selected">
+						Features
+					</NavLink>
+
+					<NavLink exact to = "/user" activeClassName="selected" className="signin-btn">
+						<img src={require("../images/btn_google_signin_dark_normal_web.png")} alt="Google signin"/>
+					</NavLink>
+					</ul>
 				</div>
+			</nav>
 
 			);
 

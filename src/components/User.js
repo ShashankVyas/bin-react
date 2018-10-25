@@ -1,78 +1,75 @@
 import React from "react";
-import { CLIENT_ID } from "../config.js";
-import {GoogleLogin,GoogleLogout} from 'react-google-login';
+import { GOOGLE_API_KEY, CLIENT_ID, SCOPES } from "../config.js";
+
+
+var DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"];
 
 class User extends React.Component {
-	
+
 	  constructor(props) {
     	super(props);
 	    this.state = {
 	      loggedIn: [],
-	      currentUser: null
+	      currentUser: null,
+				showAuthButton: true,
+	      showSignOutButton: false
 	    };
-	    this.setUserState = this.setUserState.bind(this);
+
+			this.initClient = this.initClient.bind(this);
+			this.signinChanged =  this.signinChanged.bind(this);
 	  }
 
 	  componentDidMount() {
-			this.setUserState();
+			this.handleClientLoad();
+
+				this.state.showAuthButton === true ? this.handleAuthClick.bind(this) : this.handleSignoutClick.bind(this);
+			//this.setUserState();
 		}
 
-    onLoginSuccess(googleUser) {
-      var profile = googleUser.getBasicProfile();
-      document.getElementById('status').innerHTML = 'Thanks for logging in ' + profile.getName() + '!';
+		signinChanged(val) {
+	    if (val) {
+	      this.setState({
+	        showAuthButton: false,
+	        showSignOutButton: true
+	      })
+	    } else {
+	      this.setState({
+	        showAuthButton: true,
+	        showSignOutButton: false
+	      })
+	    }
+		};
 
-			sessionStorage.setItem('googleUser',JSON.stringify(googleUser));
-			this.setUserState();
-    }
+		initClient() {
 
-    onLoginFailure(error) {
-	    sessionStorage.clear('googleUser')
-	    this.setUserState();
-    }
+	    window.gapi.client.init({
+	      discoveryDocs: DISCOVERY_DOCS,
+	      clientId: CLIENT_ID,
+	      scope: SCOPES,
+	      apiKey: GOOGLE_API_KEY
+	    }).then(function () {
+	      console.log(window.gapi);
+	    });
+	    window.gapi.auth2.getAuthInstance().isSignedIn.listen(this.signinChanged);
+	    this.signinChanged(window.gapi.auth2.getAuthInstance().isSignedIn.get());
+	  }
 
-   onLogout(googleUser) {
-	    sessionStorage.clear('googleUser')
-	    this.setUserState();
-	    document.getElementById('status').innerHTML = "Logged Out";
-    }
+		handleAuthClick(){
+	    window.gapi.auth2.getAuthInstance().signIn();
+	  }
 
-	  setUserState() {
-	  	var userJson = JSON.parse(sessionStorage.getItem('googleUser'));
+	  handleSignoutClick(){
+	    window.gapi.auth2.getAuthInstance().signOut();
+	  }
 
-	  	if(userJson !== null){
-		  	this.setState((state, props) => ({
-		      loggedIn: userJson,
-		      currentUser: userJson.profileObj.givenName
-		    }));
-	  	}else{
-		  	this.setState((state, props) => ({
-		      loggedIn: null,
-		      currentUser: null
-		    }));
-	  	}
+	  handleClientLoad() {
+	    window.gapi.load('client:auth2', this.initClient);
 	  }
 
 		render() {
 
-			 let googleSignIn = (
-				  <GoogleLogin
-				    clientId={CLIENT_ID}
-						theme = "dark"
-						buttonText = "Login"
-				    onSuccess={this.onLoginSuccess.bind(this)}
-				    onFailure={this.onLoginFailure.bind(this)} />
-		    );
-
-			 let googleSignOut = (
-			    <GoogleLogout
-			      buttonText="Logout"
-			      onLogoutSuccess={this.onLogout.bind(this)}
-			    />
-		    );
-
 				return (
 			  	<div className="Loginwrapper" >
-							{this.state.currentUser === null ? googleSignIn : googleSignOut}
 							<div id="status"> </div>
 			    </div>
 				);
