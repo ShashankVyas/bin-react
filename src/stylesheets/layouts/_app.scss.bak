@@ -1,9 +1,19 @@
+body{
+	overflow: hidden;
+}
+
 .appContainer{
 		height: 100vh;
 }
 
+.center-div
+{
+     margin: 0 auto;
+     width: 100px; 
+}
+
 .container{
-    display: inline-flex;
+
     min-height: 100vh;
     @media (max-width: 480px){
         display: block;
@@ -13,6 +23,8 @@
 
 .current-status,
 .upcoming-meetings{
+		height: 100vh;
+		width: 25vw;
     @media (max-width: 480px){
         padding: 16px;
     }
@@ -61,6 +73,7 @@
         }
     }
 }
+
 .list-group-item{
     display: block;
     padding: 16px 4px;
@@ -109,17 +122,20 @@
 
 .appletContainer{
     text-align: center;
-    margin: auto;
-    width: 50%;
 
+    margin: auto;
+		height: 100vh;
+    width: 30%;
+		position: fixed;
+		right: 400px;
+		top: 150px;
     padding: 10px;
     display: block;
     text-align: center;
     img{
         width: 100%;
-        max-width: 280px;
+        max-width: 320px;
         margin: 0 auto 32px auto;
-        opacity: 0.75;
     }
     h3{
         font-size: 20px;
@@ -127,42 +143,73 @@
         opacity: 0.33;
         font-weight: 400;
     }
-    @media (max-width: 480px){
-        margin: 32px 0;
-    }
+		z-index: 2;
 }
+
 
 .loading{
     margin: 128px 0;
     text-align: center;
 }
 
-.topnav {
+.topnav.open {
+	display: inline-flex;
+  //flex-direction:  column;
+	justify-content:  left;
   overflow: hidden;
-  background: #d3d3d3;
+  border: none;
+	background-color: $green;
+	position: absolute;
+	width: 100%;
+	height: 80px;
+	z-index: 3;
 }
 
-.topnav a {
-  float: left;
-  display: block;
-  color: #999;
+.topnav.busy {
+	display: inline-flex;
+  //flex-direction:  column;
+	justify-content:  left;
+  overflow: hidden;
+  border: none;
+	background-color: $red;
+	position: absolute;
+	width: 100%;
+	height: 80px;
+	z-index: 3;
+}
+
+.topnav .unselected {
+	border: none;
+  color: #ffff;
   text-align: center;
   padding: 16px 16px;
   text-decoration: none;
-  font-size: 30px;
+	font-weight: 400;
+  font-size: 28px;
+	font-family: 'Montserrat', sans-serif;
     @media (max-width: 480px){
         font-size: 22px;
     }
 }
 
-.topnav a:hover {
-  background-color: $white;
-  color: black;
+.topnav a {
+  float: left;
+  display: block;
+  color: #f2f2f2;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  font-size: 25px;
 }
+
+.topnav a:hover,.selected  {
+	font-weight: 800;
+}
+
 
 .active {
   background-color: $white;
-  color: white;
+  color: green;
 }
 
 .topnav .icon {
@@ -191,15 +238,15 @@
   }
 }
 
-.discover-logo {
-    width: 126px;
-    display: inline-block;
-}
-
 @media screen and (max-width: 767px){
 	.discover-logo {
 	    margin: 18px 5px!important;
 	}
+}
+
+.signin-btn {
+	float: right;
+
 }
 
 .rc-time-picker {
@@ -356,4 +403,75 @@ li.rc-time-picker-panel-select-option-disabled {
 li.rc-time-picker-panel-select-option-disabled:hover {
   background: transparent;
   cursor: not-allowed;
+}
+
+.Loginwrapper {
+	position: fixed;
+	right: 48px;
+	top: 100px;
+	border-radius: 4px;
+	color: $green;
+	@media (max-width: 480px){
+			right: 32px;
+			top: 32px;
+	}
+}
+
+.button {
+    font-family: Roboto,Arial,sans-serif;
+    color: #000;
+    cursor: pointer;
+    padding: 0 30px;
+    display: inline-block;
+    margin: 10px 15px;
+    text-transform: uppercase;
+    line-height: 2em;
+    letter-spacing: 1.5px;
+    font-size: 1em;
+    outline: none;
+    position: relative;
+    font-size: 14px;
+    border: 3px solid #cfcece;
+    background-color: #fff;
+    border-radius: 15px 15px 15px 15px;
+    transition: all .3s;
+}
+
+.button.hover, .button:hover {
+    border-color: #2980b9;
+}
+
+.modal {
+  font-size: 12px;
+}
+.modal > .header {
+  width: 100%;
+  border-bottom: 1px solid gray;
+  font-size: 18px;
+  text-align: center;
+  padding: 5px;
+}
+.modal > .content {
+  width: 100%;
+  padding: 10px 5px;
+}
+.modal > .actions {
+  width: 100%;
+  padding: 10px 5px;
+  margin: auto;
+  text-align: center;
+}
+.modal > .close {
+  cursor: pointer;
+  position: absolute;
+  display: block;
+  padding: 2px 5px;
+  line-height: 20px;
+  right: -10px;
+  top: -10px;
+  font-size: 24px;
+  color: black;
+  background: #ffffff;
+  border-radius: 18px;
+  border: 1px solid #cfcece;
 }
