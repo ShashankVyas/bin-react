@@ -1,3 +1,4 @@
-node_modules/
+node_modules/*
 build/
 *.bak
+node_modules/\nbower_components/

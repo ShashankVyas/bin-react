@@ -1,14 +1,28 @@
 import React from "react";
 
 class Feature extends React.Component {
+	constructor(props){
+		super(props);
+		this.state = {
+			isEmpty: false
+		}
+
+	}
+
+	componentDidMount = () => {
+
+		this.state.isEmpty=false;
+	}
 	render(){
 		return(
 			<div className="feature-list">
-				<i className="fa fa-lightbulb-o" aria-hidden="true"></i>
-				<i className="fa fa-signal" aria-hidden="true"></i>
-				<i className="fa fa-plug" aria-hidden="true"></i>
-				<i className="fa fa-video-camera" aria-hidden="true"></i>
-				<i className="fa fa-phone" aria-hidden="true"></i>	
+			<ul>
+				<li><i className="fa fa-lightbulb-o fa-9x fa-fw"></i>   Lights</li>
+				<li><i className="fa fa-signal  fa-9x fa-fw" aria-hidden="true"></i>   WiFi/LAN Connectivity</li>
+				<li><i className="fa fa-plug  fa-9x fa-fw" aria-hidden="true"></i>   Power plug points</li>
+				<li><i className="fa fa-video-camera fa-9x fa-fw" aria-hidden="true"></i>   Video Conferencing</li>
+				<li><i className="fa fa-phone fa-9x" aria-hidden="true"></i>   Telephony</li>
+			</ul>
 			</div>
 		);
 	}
