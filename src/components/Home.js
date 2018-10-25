@@ -5,11 +5,8 @@ import Popup from "reactjs-popup";
 import axios from 'axios';
 import moment from "moment";
 
-import welcomeImage from "../images/vacancy.png";
-import spinner from "../images/spinner.svg";
-
 import Book from "./Book";
-import Header from "./Header";
+import spinner from "../images/spinner.svg";
 import { GOOGLE_API_KEY, CALENDAR_ID} from "../config.js";
 
 
@@ -22,7 +19,8 @@ class Home extends React.Component {
       isBusy: false,
       isEmpty: false,
       isLoading: true,
-      endTime: null
+      currentEventEnd: null,
+      currentEventID: null
     };
   }
 
@@ -31,7 +29,6 @@ class Home extends React.Component {
 
     this.clockCounter = setInterval(() => {this.ticker();}, 1000);
     this.eventCounter = setInterval(() => {this.getEvents();}, 60000);
-
   };
 
   componentWillUnmount = () => {
@@ -96,22 +93,44 @@ class Home extends React.Component {
        {
         this.setState({
           isBusy: true,
-          endTime: eventItem.end.dateTime
+          currentEventEnd: eventItem.end.dateTime,
+          currentEventID: eventItem.id
         });
         return false;
       } else {
-      	sessionStorage.clear('meeting');
         this.setState({
           isBusy: false,
-          endTime: null
+          currentEventEnd: null,
+          currentEventID: null
         });
       }
     }
   };
+  
+  endMeeting() {
+		let postData = {
+			'end': {
+				'dateTime': moment().toISOString()
+			}
+		};  	
+		
+		window.gapi.client.calendar.events.patch({
+		  "calendarId": CALENDAR_ID,
+		  "eventId": this.state.currentEventID,
+		  "sendUpdates": "none",
+		  "resource": postData
+    }).then( (event) => {
+				console.log(event);
+				this.getEvents();
+		}) .catch( (error) => {
+        console.log(error);
+    });
+  }
+
 		render(){
 
 			  const { time, events } = this.state;
-
+			  
 			  let eventsList = events.map(function(event) {
 			      return (
 
@@ -152,12 +171,13 @@ class Home extends React.Component {
 
 	    	let meetingDuration = (
               <div>
-              <span> for {moment(this.state.endTime).diff(
+              <span> for {moment(this.state.currentEventEnd).diff(
        									moment(this.state.time),"minutes") + 1} minutes</span>
               <div className="current-time">{moment(time).format('llll')}</div>
               <button
               className="button"
               buttontext="Submit"
+              onClick={this.endMeeting.bind(this)}
               >End Meeting</button>
 
               </div>

@@ -9,10 +9,7 @@ class User extends React.Component {
 	  constructor(props) {
     	super(props);
 	    this.state = {
-	      loggedIn: [],
-	      currentUser: null,
-				showAuthButton: true,
-	      showSignOutButton: false
+				showAuthButton: true
 	    };
 
 			this.initClient = this.initClient.bind(this);
@@ -21,27 +18,23 @@ class User extends React.Component {
 
 	  componentDidMount() {
 			this.handleClientLoad();
-
-				this.state.showAuthButton === true ? this.handleAuthClick.bind(this) : this.handleSignoutClick.bind(this);
-			//this.setUserState();
 		}
 
 		signinChanged(val) {
 	    if (val) {
+	    	localStorage.setItem('isLoggedIn', true);
 	      this.setState({
-	        showAuthButton: false,
-	        showSignOutButton: true
+	        showAuthButton: false
 	      })
 	    } else {
 	      this.setState({
-	        showAuthButton: true,
-	        showSignOutButton: false
+	        showAuthButton: true
 	      })
+	      localStorage.setItem('isLoggedIn', false);
 	    }
 		};
 
 		initClient() {
-
 	    window.gapi.client.init({
 	      discoveryDocs: DISCOVERY_DOCS,
 	      clientId: CLIENT_ID,
@@ -49,7 +42,9 @@ class User extends React.Component {
 	      apiKey: GOOGLE_API_KEY
 	    }).then(function () {
 	      console.log(window.gapi);
-	    });
+	    }).catch( (error) => {
+        console.log(error);
+      });
 	    window.gapi.auth2.getAuthInstance().isSignedIn.listen(this.signinChanged);
 	    this.signinChanged(window.gapi.auth2.getAuthInstance().isSignedIn.get());
 	  }
@@ -67,11 +62,26 @@ class User extends React.Component {
 	  }
 
 		render() {
-
+		
+				let signIn = (
+					<a href='Javascript:void(0);'
+						onClick = {this.handleAuthClick.bind(this)}>
+						<img src={require("../images/btn_google_signin_dark_normal_web.png")} alt="Google signin"/>
+					</a>
+				);
+				
+				let signOut = (
+					<a href='Javascript:void(0);'
+						onClick = {this.handleSignoutClick.bind(this)}>
+						Sign Out
+					</a>		
+				);
+		
 				return (
-			  	<div className="Loginwrapper" >
+			  	<span>
+			  			{this.state.showAuthButton ? signIn : signOut}
 							<div id="status"> </div>
-			    </div>
+			    </span>
 				);
 		}
 }
