@@ -2,6 +2,7 @@ import React from "react";
 import { NavLink } from 'react-router-dom';
 import  Popup from 'reactjs-popup';
 
+import  User from './User';
 import Book from './Book';
 
 export const Header = (props) => {
@@ -41,9 +42,8 @@ export const Header = (props) => {
 						Features
 					</NavLink>
 
-					<NavLink exact to = "/user" activeClassName="selected" className="signin-btn">
-						<img src={require("../images/btn_google_signin_dark_normal_web.png")} alt="Google signin"/>
-					</NavLink>
+					<User />
+						
 					</ul>
 				</div>
 			</nav>

@@ -14,8 +14,7 @@ class Book extends React.Component {
     this.state = {
   		startTime: moment(),
   		endTime: moment(Math.ceil((+moment().add(15, 'minutes')) / ROUNDING) * ROUNDING),
-  		loggedIn: true,
-  		jwtToken: null,
+  		loggedIn: false,
   		isConfirm: false
     };
     this.addEvent = this.addEvent.bind(this);
@@ -28,30 +27,22 @@ class Book extends React.Component {
 	}
 
   setUserState() {
-	  let userJson = JSON.parse(sessionStorage.getItem('googleUser'));
+	  let isLoggedIn = window.gapi.auth2.getAuthInstance().currentUser.get().isSignedIn();
+	 
+		this.setState({
+			loggedIn: isLoggedIn
+		});
 
-	  if(userJson !== null){
-		 	this.setState((state, props) => ({
-		     loggedIn: true,
-		     jwtToken:  userJson.tokenObj.token_type +
-		     	" " + userJson.tokenObj.access_token
-		   }));
-	  }else{
-		 	this.setState((state, props) => ({
-		     loggedIn: false,
-		     jwtToken: null
-		   }));
-	  }
 	}
 
-  setStart = async val => {
-		await this.setState({
+  setStart(val){
+		this.setState({
 			startTime:val
 		});
 	}
 
-	setEnd = async val => {
-		await this.setState({
+	setEnd(val) {
+		this.setState({
 			endTime:val
 		});
 	}
@@ -78,21 +69,14 @@ class Book extends React.Component {
 	    ]
 		};
 
-		let headers = {
-      'Content-Type': 'application/json',
-    	'Authorization': key
-		};
-
-    axios.post(`https://content.googleapis.com/calendar/v3/calendars/${TARGET_CALENDAR}/events?alt=json&key=${GOOGLE_API_KEY}`, postData, {headers: headers})
-      .then( function (response) {
-      	let attendeeStatus = response.data.attendees[0].responseStatus; 		
- 				document.getElementById('Status').innerHTML = "Succesfully booked Room!";
-	    })
-      .catch( (error) => {
-        document.getElementById('Status').innerHTML = error.response.data.error.message;
-      });
-      
-      
+		window.gapi.client.calendar.events.insert({
+		  'calendarId': TARGET_CALENDAR,
+		  'resource': postData
+		}).then( (event) => {
+				console.log(event.result.htmlLink);
+		}) .catch( (error) => {
+        console.log(error);
+    });    
   }
 
   render(){
