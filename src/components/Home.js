@@ -4,9 +4,10 @@ import { NavLink } from 'react-router-dom';
 import axios from 'axios';
 import moment from "moment";
 
-import welcomeImage from "../images/welcome.svg";
+import welcomeImage from "../images/vacancy.png";
 import spinner from "../images/spinner.svg";
 
+import Header from "./Header";
 import { GOOGLE_API_KEY, CALENDAR_ID} from "../config.js";
 
 
@@ -47,10 +48,14 @@ class Home extends React.Component {
     axios.get(`https://www.googleapis.com/calendar/v3/calendars/${CALENDAR_ID}/events?maxResults=15&orderBy=startTime&singleEvents=true&timeMin=${moment().toISOString()}&timeMax=${moment().endOf("day").toISOString()}&key=${GOOGLE_API_KEY}`)
       .then( function (response) {
   					let events = response.data.items;
-            if (events.length > 0) {
+ 												
+						if (events.length > 0){	
+							let filteredEvents = events.filter(function(item){
+							    return item.attendees[0].responseStatus === "accepted";         
+							});
               that.setState(
                 {
-                  events: events,
+                  events: filteredEvents,
                   isLoading: false,
                   isEmpty: false,
                 },
@@ -77,7 +82,8 @@ class Home extends React.Component {
     let now = moment();
     let events = this.state.events;
     for (var e = 0; e < events.length; e++) {
-      var eventItem = events[e];
+  	
+      let eventItem = events[e];
       if (
         now.isBetween(
           moment(eventItem.start.dateTime),
@@ -105,31 +111,27 @@ class Home extends React.Component {
 
 			  let eventsList = events.map(function(event) {
 			      return (
-
-				          <a
-				          className="list-group-item"
-				          href={event.htmlLink}
-				          target="_blank"
-				          key={event.id}
-				          >
-
-				          {event.summary}{" "}
-					          <span className="badge">
-						          {moment(event.start.dateTime).format("h:mm a")},{" "}
-						          {moment(event.end.dateTime).diff(
-						              moment(event.start.dateTime),
-						              "minutes"
-						              )}{" "}
-						          minutes, {moment(event.start.dateTime).format("MMMM Do")}{" "}
-
-					          </span>
-				          </a>
-
-			          );
+			        <a
+			          className="list-group-item"
+			          href={event.htmlLink}
+			          target="_blank"
+			          key={event.id}
+			        >
+			          {event.summary}{" "}
+			          <span className="badge">
+			            {moment(event.start.dateTime).format("h:mm a")},{" "}
+			            {moment(event.end.dateTime).diff(
+			              moment(event.start.dateTime),
+			              "minutes"
+			            )}{" "}
+			            minutes, {moment(event.start.dateTime).format("MMMM Do")}{" "}
+			          </span>
+			        </a>
+			      );
 			  });
 
 	      let emptyState = (
-	          <div className="appletContainer" id="wk-message" onLoad={() => document.getElementById("booker").style="none"}>
+	          <div className="appletContainer">
 		          <img src={welcomeImage} alt="Welcome" />
 		          <h3>
 			          No meetings are scheduled for the day. <u>Sign In with your Google Account to create a new meeting</u>
@@ -148,30 +150,36 @@ class Home extends React.Component {
        									moment(this.state.time),"minutes") + 1} minutes</span>
 	    	)
 
-        return(
-
+        return(				
 	        <div className = "home-page">
+	        	
+	        	<div>
+							<Header />
+						</div>
+						
 				 		<div className={this.state.isBusy ? "current-status busy" : "current-status open"}>
-            <div>
-					 		<h1 id="currentStatus">{this.state.isBusy ? "BUSY" : "OPEN"} </h1>
-					 		{this.state.isBusy && meetingDuration}
-					 		<div className="current-time">{moment(time).format('llll')}</div>
-            </div>
+	            <div>
+						 		<h1 id="currentStatus">{this.state.isBusy ? "BUSY" : "OPEN"} </h1>
+						 		{this.state.isBusy && meetingDuration}
+						 		<div className="current-time">{moment(time).format('llll')}</div>
+	            </div>
 	      		</div>
+						
+						<div id="wk-message">
+					 		<div className="upcoming-meetings">
+					 			{events.length > 0 && <h1>Upcoming Meetings</h1>}
+					 		</div>
 
-				 		<div className="upcoming-meetings">
-				 			{events.length > 0 && <h1>Upcoming Meetings</h1>}
-				 		</div>
-
-					 <div className="list-group">
-						 {this.state.isLoading  && loadingState}
-						 {this.state.isEmpty  && emptyState}
-						 {events.length > 0   && eventsList}
-					 </div>
+						 <div className="list-group">
+							 {this.state.isLoading  && loadingState}
+							 {this.state.isEmpty  && emptyState}
+							 {events.length > 0   && eventsList}
+						 </div>
+						</div>
 
 
 							<NavLink className="primary-cta" exact to = "/book"
-              onClick= {() => document.getElementById("wk-message").style.display ="none"}>+</NavLink>
+              onClick= {() => document.getElementById("wk-message").style.display ="none"} id="booker">+</NavLink>
 					</div>
 				)
 		}

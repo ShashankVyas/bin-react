@@ -6,6 +6,12 @@ body{
 		height: 100vh;
 }
 
+.center-div
+{
+     margin: 0 auto;
+     width: 100px; 
+}
+
 .container{
 
     min-height: 100vh;
@@ -128,7 +134,7 @@ body{
     text-align: center;
     img{
         width: 100%;
-        max-width: 280px;
+        max-width: 320px;
         margin: 0 auto 32px auto;
     }
     h3{
@@ -148,8 +154,8 @@ body{
 
 .topnav {
 	display: inline-flex;
-  flex-direction:  column;
-	justify-content:  center;
+  //flex-direction:  column;
+	justify-content:  left;
   overflow: hidden;
   border: none;
 	background-color: $green;
@@ -171,6 +177,16 @@ body{
     @media (max-width: 480px){
         font-size: 22px;
     }
+}
+
+.topnav a {
+  float: left;
+  display: block;
+  color: #f2f2f2;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  font-size: 25px;
 }
 
 .topnav a:hover,.selected  {
@@ -386,7 +402,63 @@ li.rc-time-picker-panel-select-option-disabled:hover {
 			right: 32px;
 			top: 32px;
 	}
+}
 
+.button {
+    font-family: Roboto,Arial,sans-serif;
+    color: #000;
+    cursor: pointer;
+    padding: 0 30px;
+    display: inline-block;
+    margin: 10px 15px;
+    text-transform: uppercase;
+    line-height: 2em;
+    letter-spacing: 1.5px;
+    font-size: 1em;
+    outline: none;
+    position: relative;
+    font-size: 14px;
+    border: 3px solid #cfcece;
+    background-color: #fff;
+    border-radius: 15px 15px 15px 15px;
+    transition: all .3s;
+}
 
+.button.hover, .button:hover {
+    border-color: #2980b9;
+}
 
+.modal {
+  font-size: 12px;
+}
+.modal > .header {
+  width: 100%;
+  border-bottom: 1px solid gray;
+  font-size: 18px;
+  text-align: center;
+  padding: 5px;
+}
+.modal > .content {
+  width: 100%;
+  padding: 10px 5px;
+}
+.modal > .actions {
+  width: 100%;
+  padding: 10px 5px;
+  margin: auto;
+  text-align: center;
+}
+.modal > .close {
+  cursor: pointer;
+  position: absolute;
+  display: block;
+  padding: 2px 5px;
+  line-height: 20px;
+  right: -10px;
+  top: -10px;
+  font-size: 24px;
+  color: black;
+  background: #ffffff;
+  border-radius: 18px;
+  border: 1px solid #cfcece;
 }
