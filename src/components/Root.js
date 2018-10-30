@@ -1,12 +1,12 @@
 import React from "react";
-
 import Header from "./Header";
+import { connect } from 'react-redux';
 
 class Root extends React.Component {
 
 	render(){
 		return(
-				<div className="topnav" id="myTopnav">
+				<div className={this.props.isBusy ? "topnav-closed" : "topnav-open"} id="myTopnav">
 					<div>
 						<div>
 							<Header />
@@ -24,5 +24,10 @@ class Root extends React.Component {
 
 	}
 }
-
-export default Root;
+	function mapStateToProps(state) {
+	  return {
+	    isBusy: state.isBusyStatus
+	  };
+	}
+	
+export default connect(mapStateToProps)(Root);

@@ -1,19 +1,28 @@
 body{
 	overflow: hidden;
+	 //background-image: linear-gradient(rgba(255,0,0,0), rgb(0, 186, 139));
 }
 
 .appContainer{
 		height: 100vh;
+		&.open{
+			background-color: #e5f8f3;
+		}
+	  &.busy{
+			background-color: #f9ecec;
+		}
 }
 
 .center-div
 {
      margin: 0 auto;
-     width: 100px; 
+     width: 100px;
+
+		 top: 100px;
+		 display: block;
 }
 
 .container{
-
     min-height: 100vh;
     @media (max-width: 480px){
         display: block;
@@ -21,25 +30,27 @@ body{
     }
 }
 
-.current-status,
-.upcoming-meetings{
-		height: 100vh;
-		width: 25vw;
-    @media (max-width: 480px){
-        padding: 16px;
-    }
-}
 .current-status{
     color: $white;
     display: flex;
-    align-items: center;
-    padding: 15px;
+		flex-direction: column;
+		justify-content: center;
+		position: fixed;
+		top: 160px;
+		height: 50vh;
+		padding: 10px;
     &.open{
-        background: $green;
+        //background-image: linear-gradient(to left,rgba(255,0,0,0), rgb(0, 186, 139));
+				background: rgb(0, 186, 139);
     }
     &.busy{
-        background: $red;
+        background:  #c44848;
     }
+
+		&.open, &.busy {
+			border-top-right-radius : 25px;
+			border-bottom-right-radius : 25px;
+		}
     h1{
         font-size: 120px;
         line-height: 120px;
@@ -59,7 +70,13 @@ body{
 }
 
 .upcoming-meetings{
-    padding: 64px;
+    width: 58vw;
+    height: 48vh;
+    margin-top: 8vh;
+	    @media (max-width: 480px){
+	        padding: 16px;
+	    }
+
     @media (max-width: 768px){
         padding: 48px;
     }
@@ -67,7 +84,6 @@ body{
         padding: 24px;
     }
     h1{
-        margin: 0 0 24px 0;
         @media (max-width: 480px){
             font-size: 32px;
         }
@@ -76,10 +92,10 @@ body{
 
 .list-group-item{
     display: block;
-    padding: 16px 4px;
+    width: 50vw;
+    padding: 1vh 1vw;
     color: #4099ff;
-    line-height: 22px;
-    border-bottom: 1px solid #eee;
+    line-height: 5vh;
     &:hover{
         background: rgba(0,0,0,0.085);
     }
@@ -104,7 +120,7 @@ body{
     position: fixed;
     right: 48px;
     bottom: 48px;
-    background: $blue-dark;
+    background: #00ba8b;
     border-radius: 4px;
     color: $white;
     font-size: 36px;
@@ -121,29 +137,32 @@ body{
 }
 
 .appletContainer{
-    text-align: center;
-
-    margin: auto;
-		height: 100vh;
-    width: 30%;
-		position: fixed;
-		right: 400px;
-		top: 150px;
-    padding: 10px;
-    display: block;
-    text-align: center;
+    height: 70vh;
+    width: 62vw;
+    margin-left: 37vw;
+    padding: 2vh;
+    margin-bottom: 18vh;
+    margin-right: 1vw;
+    margin-top: 18vh;
+    display: inline-block;
+    flex-direction: column;
+    text-align: -webkit-center;
     img{
         width: 100%;
         max-width: 320px;
         margin: 0 auto 32px auto;
     }
     h3{
-        font-size: 20px;
-        line-height: 28px;
-        opacity: 0.33;
+        font-size: 50px;
+				font-family: 'Montserrat', sans-serif;
         font-weight: 400;
+				color: gray;
+			&.book-now{
+					width: max-content;
+					padding: 0 0 8px 0;
+			    font-size: 25px;
+			}
     }
-		z-index: 2;
 }
 
 
@@ -153,46 +172,42 @@ body{
 }
 
 .topnav {
-	display: inline-flex;
-  //flex-direction:  column;
-	justify-content:  left;
+  flex-direction:  row;
+	justify-content:  center;
   overflow: hidden;
   border: none;
-	background-color: $green;
+	background-blend-mode: exclusion;
 	position: absolute;
 	width: 100%;
 	height: 80px;
 	z-index: 3;
+	    margin-left: 64px;
 }
 
-.topnav .unselected {
-	border: none;
-  color: #ffff;
-  text-align: center;
-  padding: 16px 16px;
-  text-decoration: none;
-	font-weight: 400;
-  font-size: 28px;
-	font-family: 'Montserrat', sans-serif;
-    @media (max-width: 480px){
-        font-size: 22px;
-    }
-}
 
-.topnav a {
+.topnav-open a {
   float: left;
   display: block;
-  color: #f2f2f2;
   text-align: center;
   padding: 14px 16px;
   text-decoration: none;
-  font-size: 25px;
+	font-weight: 500;
+	font-size: 28px;
+	font-family: 'Montserrat', sans-serif;
+	color: rgb(0, 186, 139);
 }
 
-.topnav a:hover,.selected  {
-	font-weight: 800;
+.topnav-closed a {
+  float: left;
+  display: block;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+	font-weight: 500;
+	font-size: 28px;
+	font-family: 'Montserrat', sans-serif;
+	color: #c44848;
 }
-
 
 .active {
   background-color: $white;
@@ -225,19 +240,13 @@ body{
   }
 }
 
-@media screen and (max-width: 767px){
-	.discover-logo {
-	    margin: 18px 5px!important;
-	}
-}
-
 .signin-btn {
 	float: right;
-
 }
 
 .rc-time-picker {
   display: inline-block;
+  padding-right: 5px;
   box-sizing: border-box;
 }
 .rc-time-picker * {
@@ -429,36 +438,114 @@ li.rc-time-picker-panel-select-option-disabled:hover {
 }
 
 .modal {
-  font-size: 12px;
+  background: #00ba8b;
+	color: white;
+	border: none;
 }
+
 .modal > .header {
   width: 100%;
-  border-bottom: 1px solid gray;
-  font-size: 18px;
+  border-bottom: 0.2px solid gray;
+  font-size: 60px;
   text-align: center;
   padding: 5px;
 }
 .modal > .content {
   width: 100%;
-  padding: 10px 5px;
+	display: flex;
+
 }
 .modal > .actions {
   width: 100%;
   padding: 10px 5px;
   margin: auto;
-  text-align: center;
+  margin-left: 76px;
+
 }
 .modal > .close {
-  cursor: pointer;
+  cursor:  pointer;
   position: absolute;
-  display: block;
   padding: 2px 5px;
-  line-height: 20px;
   right: -10px;
   top: -10px;
   font-size: 24px;
   color: black;
   background: #ffffff;
-  border-radius: 18px;
-  border: 1px solid #cfcece;
+  border: none;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+.column {
+    float: left;
+    width: 50%;
+    padding: 10px;
+    height: 300px; 
+}
+
+.row:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+.feature-list {
+    width: 335px;
+    height: 240px;
+    margin-left: 12vw;
+    margin-top: 14vh;
+    text-align: left;
+    float: left;
+    display: inline-block;
+    z-index: 3;
+}
+
+.feature-list li{
+  font-size: 27px;
+  color: gray;
+	font-family: 'Raleway', sans-serif;
+}
+
+.book-container{
+    width: 39vw;
+    margin-top: 9vh;
+}
+
+.clock-container{
+    padding: 1vw;
+}
+
+
+.EmptyState{
+    padding-left: 5vw;
+    padding-top: 5vh;
+    text-align: left;
+    min-width: 500px;
+    max-width: 600px;
+}
+
+.open-ticket {
+	margin-top: 6vh;
+}
+
+.ticket-dropdown {
+    margin-top: 2vh;
+    width: 30vw;
+    font-family: 'Montserrat', sans-serif;
+	  font-size: 18px;
+	  color: gray;
+}
+
+.ticket-text-box {
+		width: 30vw;
+    height: 15vh;
+    font-family: 'Montserrat', sans-serif;
+	  font-size: 18px;
+	  color: gray;
+}
+
+.addn-dtls-ticket {
+	  padding: 1vh;
 }

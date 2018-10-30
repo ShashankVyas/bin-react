@@ -1,9 +1,10 @@
 import React from "react";
-import axios from 'axios';
 import moment from "moment";
-import TimePicker from 'rc-time-picker';
 import Clock from 'react-clock'
-import { GOOGLE_API_KEY, CALENDAR_ID, TARGET_CALENDAR } from "../config.js";
+import { connect } from 'react-redux';
+import TimePicker from 'rc-time-picker';
+import { Redirect } from 'react-router-dom';
+import { CALENDAR_ID, TARGET_CALENDAR } from "../config.js";
 
 const ROUNDING = 30 * 60 * 1000;
 const format = 'h:mm a';
@@ -13,52 +14,27 @@ class Book extends React.Component {
     super(props);
     this.state = {
   		startTime: moment(),
-  		endTime: moment(Math.ceil((+moment().add(15, 'minutes')) / ROUNDING) * ROUNDING),
-  		loggedIn: true,
-  		jwtToken: null,
-  		isConfirm: false
+  		endTime: moment(Math.ceil((+moment().add(15, 'minutes')) / ROUNDING) * ROUNDING)
     };
-    this.addEvent = this.addEvent.bind(this);
-    this.setStart = this.setStart.bind(this)
-    this.setEnd = this.setEnd.bind(this)
   }
 
-  componentDidMount() {
-		this.setUserState();
-	}
-
-  setUserState() {
-	  let userJson = JSON.parse(sessionStorage.getItem('googleUser'));
-
-	  if(userJson !== null){
-		 	this.setState((state, props) => ({
-		     loggedIn: true,
-		     jwtToken:  userJson.tokenObj.token_type +
-		     	" " + userJson.tokenObj.access_token
-		   }));
-	  }else{
-		 	this.setState((state, props) => ({
-		     loggedIn: false,
-		     jwtToken: null
-		   }));
-	  }
-	}
-
-  setStart = async val => {
-		await this.setState({
+  setStart = (val) => {
+		this.setState({
 			startTime:val
 		});
 	}
 
-	setEnd = async val => {
-		await this.setState({
+	setEnd = (val) => {
+		this.setState({
 			endTime:val
 		});
 	}
+	
+	updateEvents = (val) =>  {
+		this.props.dispatch({ type: 'UPDATE_EVENTS' });
+	}
 
-	addEvent() {
-   	let key  = this.state.jwtToken;
-
+	addEvent = () => {
    	let postData = {
 			'summary': 'Quick Meeting',
 			'description': 'Quick Meeting booked by SAM',
@@ -76,23 +52,18 @@ class Book extends React.Component {
 	          'email': CALENDAR_ID
 	        }
 	    ]
-		};
-
-		let headers = {
-      'Content-Type': 'application/json',
-    	'Authorization': key
-		};
-
-    axios.post(`https://content.googleapis.com/calendar/v3/calendars/${TARGET_CALENDAR}/events?alt=json&key=${GOOGLE_API_KEY}`, postData, {headers: headers})
-      .then( function (response) {
-      	let attendeeStatus = response.data.attendees[0].responseStatus; 		
- 				document.getElementById('Status').innerHTML = "Succesfully booked Room!";
-	    })
-      .catch( (error) => {
-        document.getElementById('Status').innerHTML = error.response.data.error.message;
-      });
-      
-      
+	};
+		window.gapi.client.calendar.events.insert({
+		  'calendarId': TARGET_CALENDAR,
+		  'resource': postData
+		}).then( (event) => {
+			this.updateEvents(event);
+		}).then(() => {
+			this.props.history.push('/');
+		}).catch( (error) => {
+        console.log(error);
+    });    
+    
   }
 
   render(){
@@ -100,9 +71,9 @@ class Book extends React.Component {
   let addState = (
       <div>
 				
-				<h2>Book now for {moment(this.state.endTime).diff(this.state.startTime, 'minutes') + 1} minutes</h2>
+				<h3 className="book-now">Book now for {moment(this.state.endTime).diff(this.state.startTime, 'minutes') + 1} minutes</h3>
 				
-	      <div>
+	      <div className="clock-container">
 	        <Clock
 	          value={moment(this.state.startTime).toDate()}
 	        />
@@ -128,24 +99,33 @@ class Book extends React.Component {
 	      </div>
 				
 				<div className="actions">
-		   		<button
-		        className="button"
-	          buttontext="Submit"
-		        onClick={this.addEvent.bind(this)}>Submit</button>
+			   		<button
+			        className="button"
+		          buttontext="Submit"
+			        onClick={this.addEvent}>Submit</button>
 		    </div>
+		    
       </div>);
       
     let linkToLogin = (
-    		<div>Please Log into google before inserting an event</div> 
+    		<div className="book-container">
+    			<h3 className="book-now"> Please Log into google before inserting an event!</h3>
+    		</div> 
     );
     
    	return(
-   		<div id="Status" className='center-div'>
-   			{this.state.loggedIn ? addState : linkToLogin}
+   		<div id="Status" className='book-container'>
+   			{this.props.isLoggedIn ? addState : linkToLogin}
    		</div>
    	)
 
   }
 }
 
- export default Book;
+	function mapStateToProps(state) {
+	  return {
+	    isLoggedIn: state.loginReducer.isLoggedIn
+	  };
+	}
+	
+export default connect(mapStateToProps)(Book);

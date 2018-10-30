@@ -1,88 +1,47 @@
 import React from "react";
-import Popup from "reactjs-popup";
+import { NavLink } from 'react-router-dom';
+import { connect } from 'react-redux';
+import  User from './User';
 
-import Feature from "./Feature";
-import Ticket from "./Ticket";
-import User from "./User";
-import Book from "./Book";
+class Header extends React.Component {
 
-export const Header = (props) => {
+	render() {	
+		return (
 
-	return (
+				<nav>
+					<div className= {this.props.isBusy ? "topnav topnav-closed" : "topnav topnav-open"}>
+						<ul>
+						<NavLink to = "/" className="unselected" activeClassName="selected">
+							<i className="fa fa-home"></i> SAM
+						</NavLink>
+					  
+					  <NavLink to = "/book" className="unselected" activeClassName="selected">
+							Quick Book
+						</NavLink>
 
-				<div className="topnav" id="myTopnav">			
-					<Popup trigger={<a href="JavaScript:void(0);">Features</a>}
-						modal
-					>
-					  {close => (
-				      <div className="modal">
-				        <a href="JavaScript:void(0);"
-				        	className="close" onClick={close}>
-				          &times;
-				        </a>
-				        <div className="header center-div"> Features </div>
-				        <div className="content">
-				        	<Feature />
-				        </div>
-				      </div>
-				    )}
-				  </Popup>
-					
-					<Popup trigger={<a href="JavaScript:void(0);">Open A Ticket</a>}
-						modal
-						>
-					  {close => (
-				      <div className="modal">
-				        <a href="JavaScript:void(0);"
-				        	className="close" onClick={close}>
-				          &times;
-				        </a>
-				        <div className="header center-div"> Open A Ticket </div>
-				        <div className="content">
-				        	<Ticket />
-				        </div>
-				      </div>
-				    )}
-				  </Popup>
-				  
-					<Popup trigger={<a href="JavaScript:void(0);">Log In</a>}
-						modal
-					>
-						{close => (
-				      <div className="modal">
-				        <a href="JavaScript:void(0);"
-				        	className="close" onClick={close}>
-				          &times;
-				        </a>
-				        <div className="header center-div"> Login </div>
-				        <div className="content">
-				        	<User />
-				        </div>
-				      </div>
-				    )}
-				  </Popup>
-				  
-					<Popup trigger={<a href="JavaScript:void(0);">Book A Meeting</a>}
-						modal
-					>
-						{close => (
-				      <div className="modal">
-				        <a href="JavaScript:void(0);"
-				        	className="close" onClick={close}>
-				          &times;
-				        </a>
-				        <div className="header center-div"> Quick Book </div>
-				        <div className="content">
-				        	<Book />
-				        </div>
-				      </div>
-				    )} 	
-				  </Popup>				  				  
-					
-				</div>
+						<NavLink to = "/ticket" className="unselected" activeClassName="selected">
+							Ticket
+						</NavLink>
 
-			);
+						<NavLink to = "/feature" className="unselected" activeClassName="selected">
+							Features
+						</NavLink>
+
+						<User />
+						
+						</ul>
+					</div>
+				</nav>
+
+				);
+	}
 
 };
 
-export default Header;
+	function mapStateToProps(state) {
+	  return {
+	    isBusy: state.busyReducer.isBusyStatus
+	  };
+	}
+	
+export default connect(mapStateToProps)(Header);

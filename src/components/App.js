@@ -1,24 +1,33 @@
 import React from "react";
-import { BrowserRouter as Router, Route } from 'react-router-dom'
-import Popup from "reactjs-popup";
+import { connect } from 'react-redux';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 
-import Home from "./Home";
-
+import Status from "./Status";
+import Feature from "./Feature";
+import Book from "./Book";
+import Ticket from "./Ticket";
+import User from "./User";
+import Home from "./Home"
+import Header from "./Header"
 
 class App extends React.Component {
 
 	render() {
 
 		return(
-				<Router className="appContainer">
-					<div>
-						{/* <Route path={"/"} component={Root} /> */}
-						<Route path={"/"} component={Home} />
-						{/*
-						<Route path={"/feature"} component={Feature} />
-						<Route path={"/ticket"} component={Ticket} />
-						<Route path={"/user"} component={User} />
-						<Route path={"/book"} component={Book} />*/}
+				<Router>
+					<div  className={this.props.isBusy ? "appContainer busy" : "appContainer open"}>
+						<Header />
+							<Status />
+							<div className="appletContainer">
+								<Switch>
+										<Route path={"/feature"} component={Feature} />
+										<Route path={"/ticket"} component={Ticket} />
+										<Route path={"/user"} component={User} />
+										<Route path={"/book"} component={Book} />
+										<Route path={"/"} component={Home} />
+								</Switch>
+							</div>
 					</div>
 				</Router>
 		    );
@@ -26,4 +35,10 @@ class App extends React.Component {
 	}
 }
 
-export default App;
+	function mapStateToProps(state) {
+	  return {
+	    isBusy: state.busyReducer.isBusyStatus
+	  };
+	}
+	
+export default connect(mapStateToProps)(App);
