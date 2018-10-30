@@ -528,6 +528,7 @@ li.rc-time-picker-panel-select-option-disabled:hover {
 
 .open-ticket {
 	margin-top: 6vh;
+}
 
 .ticket-dropdown {
     margin-top: 2vh;
