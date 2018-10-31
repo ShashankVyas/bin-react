@@ -32,27 +32,28 @@ body{
 
 .current-status{
     color: $white;
-    display: flex;
 		flex-direction: column;
 		justify-content: center;
-		position: fixed;
-		top: 160px;
-		height: 50vh;
-		padding: 10px;
+		text-align: center;
+    width: 40vw;
+    height: 55vh;
+    margin-top: 30vh;
+    position: absolute;
+    display: inline-block;
+    
     &.open{
-        //background-image: linear-gradient(to left,rgba(255,0,0,0), rgb(0, 186, 139));
+    		border-top-right-radius : 25px;
+				border-bottom-right-radius : 25px;
 				background: rgb(0, 186, 139);
     }
     &.busy{
+    		border-top-right-radius : 25px;
+				border-bottom-right-radius : 25px;    	
         background:  #c44848;
     }
 
-		&.open, &.busy {
-			border-top-right-radius : 25px;
-			border-bottom-right-radius : 25px;
-		}
     h1{
-        font-size: 120px;
+        font-size: 105px;
         line-height: 120px;
     }
     @media (max-width: 768px){
@@ -70,7 +71,7 @@ body{
 }
 
 .upcoming-meetings{
-    width: 58vw;
+    width: fit-content;
     height: 48vh;
     margin-top: 8vh;
 	    @media (max-width: 480px){
@@ -92,7 +93,6 @@ body{
 
 .list-group-item{
     display: block;
-    width: 50vw;
     padding: 1vh 1vw;
     color: #4099ff;
     line-height: 5vh;
@@ -107,9 +107,11 @@ body{
     }
 }
 .current-time{
-    margin: 32px 0 64px 0;
-    color: $white;
-    font-size: 30px;
+    color: $white;   
+    font-size: 25px;
+    text-align: center;
+    margin-top: 5vh;
+    
     @media (max-width: 480px){
         font-size: 22px;
         margin: 0 0 32px 0;
@@ -153,16 +155,11 @@ body{
         margin: 0 auto 32px auto;
     }
     h3{
-        font-size: 50px;
 				font-family: 'Montserrat', sans-serif;
         font-weight: 400;
 				color: gray;
-			&.book-now{
-					width: max-content;
-					padding: 0 0 8px 0;
-			    font-size: 25px;
+			  font-size: 25px;
 			}
-    }
 }
 
 
@@ -181,11 +178,11 @@ body{
 	width: 100%;
 	height: 80px;
 	z-index: 3;
-	    margin-left: 64px;
 }
 
 
 .topnav-open a {
+	margin-top: 1vh;
   float: left;
   display: block;
   text-align: center;
@@ -493,9 +490,9 @@ li.rc-time-picker-panel-select-option-disabled:hover {
 
 .feature-list {
     width: 335px;
-    height: 240px;
+    height: 265px;
     margin-left: 12vw;
-    margin-top: 14vh;
+    margin-top: 8vh;
     text-align: left;
     float: left;
     display: inline-block;
@@ -505,12 +502,14 @@ li.rc-time-picker-panel-select-option-disabled:hover {
 .feature-list li{
   font-size: 27px;
   color: gray;
-	font-family: 'Raleway', sans-serif;
+	font-family: 'Montserrat', sans-serif;
+	width: 335px;
 }
 
+
 .book-container{
-    width: 39vw;
-    margin-top: 9vh;
+    width: 45vw;
+    margin-top: 8vh;
 }
 
 .clock-container{
@@ -519,15 +518,14 @@ li.rc-time-picker-panel-select-option-disabled:hover {
 
 
 .EmptyState{
-    padding-left: 5vw;
-    padding-top: 5vh;
     text-align: left;
-    min-width: 500px;
-    max-width: 600px;
+    width: 348px;
+    margin-top: 21vh;
+    margin-left: 6vw;
 }
 
 .open-ticket {
-	margin-top: 6vh;
+	margin-top: 8vh;
 }
 
 .ticket-dropdown {
@@ -548,4 +546,9 @@ li.rc-time-picker-panel-select-option-disabled:hover {
 
 .addn-dtls-ticket {
 	  padding: 1vh;
+}
+
+.list-group {
+    overflow: auto;
+    height: 50vh;
 }

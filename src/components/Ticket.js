@@ -1,56 +1,45 @@
 import React from "react";
-import Dropdown from 'react-dropdown'
 import 'react-dropdown/style.css'
-
-
-	const options = [
-			{
-			 type: 'group', name: 'Electronic Issues', items: [
-			   { value: 'comp', label: 'Computer Issues' },
-			   { value: 'proj', label: 'Projecter Issues' },
-			   { value: 'tele', label: 'Telephone Issues' },
-			   { value: 'wifi', label: 'Wifi Issues' },
-			   { value: 'vide', label: 'Video Conference Issues' },	   
-			   { value: 'othe', label: 'Other Issue' }
-			 ]
-			},
-			{
-			 type: 'group', name: 'Room Issues', items: [
-			   { value: 'ligh', label: 'Light Issues' },
-			   { value: 'outl', label: 'Outlet Issues' },
-			   { value: 'equi', label: 'Equipment Issue' },
-			   { value: 'othe', label: 'Other Issue' }
-			 ]
-			},
-			{
-			 type: 'group', name: 'Misc Issues', items: [
-			   { value: 'othe', label: 'Other Issue' }
-			 ]
-			}
-		]
-		
-		const defaultOption = options[0]
+import Dropdown from 'react-dropdown'
+import { connect } from 'react-redux';
+import {options, defaultOption} from "./resources/caps.js"
 
 class Ticket extends React.Component {
+	  constructor(props) {
+    super(props);
+    this.state = {
+      issue: null
+    };
+  }
 	
+	disableCap = () =>  {
+		this.props.dispatch({ type: 'DEACTIVATE_CAP', value: this.state.issue });
+		this.props.history.push('/feature')
+	}
+	
+	onSelect = (selectedOption) =>{
+		this.setState({
+			issue: selectedOption.value
+		});
+	}
 
 	render(){
 		return(
-			<div className="open-ticket">.
+			<div className="open-ticket">
 				<h3 className="book-now">Got an issue? We will fix it!</h3>
 				
 				<div className="ticket-dropdown">
-					<Dropdown options={options} /*onChange={this._onSelect} value={defaultOption}*/ placeholder="Select an option" />		
+					<Dropdown options={options} onChange={this.onSelect} placeholder="Select an option" />		
 				</div>
 				
 				<div className="addn-dtls-ticket">
-					<textarea className="ticket-text-box" rows="4" cols="50">Enter any additional notes here! :D</textarea>
+					<textarea placeholder="Ex. Lights are broken" className="ticket-text-box" rows="4" cols="50" />
 				</div>
 				
 				<button
 					className="button"
 					buttontext="Submit"
-					onClick={()=>this.props.history.push('/')}
+					onClick={()=>this.disableCap()}
 				>
 					Submit
 				</button>
@@ -59,5 +48,10 @@ class Ticket extends React.Component {
 		);
 	}
 }
-
-export default Ticket;
+	function mapStateToProps(state) {
+		return {
+	    caps: state.featureReducer.capabilities
+	  };
+	}
+	
+export default connect(mapStateToProps)(Ticket);

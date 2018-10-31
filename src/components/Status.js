@@ -1,12 +1,8 @@
 import React from "react";
-import { NavLink } from 'react-router-dom';
 import { connect } from 'react-redux';
-import Popup from "reactjs-popup";
 import moment from "moment";
 import axios from 'axios';
 
-import Book from "./Book";
-import spinner from "../images/spinner.svg";
 import { GOOGLE_API_KEY, CALENDAR_ID} from "../config.js";
 
 class Status extends React.Component {
@@ -140,10 +136,11 @@ class Status extends React.Component {
 
 	    	let meetingDuration = (
               <div>
-	              <div> for {moment(this.state.currentEventEnd).diff(
-	       									moment(this.state.time),"minutes") + 1} minutes
-	       				</div>
-	       				<div>
+	       				<div className="center">      						
+	       						<div> for {moment(this.state.currentEventEnd).diff(
+			       									moment(this.state.time),"minutes") + 1} minutes
+			       				</div>
+	       				
 			              <button
 				              className="button"
 				              buttontext="Submit"
@@ -157,7 +154,9 @@ class Status extends React.Component {
 	    	
         return(
 				 		<div className={this.props.isBusy ? "current-status busy" : "current-status open"}>	 				
-				 				{moment(this.state.time).format('lll')}
+				 				<div className="current-time">
+				 					{moment(this.state.time).format('lll')}
+				 				</div>
 						 		<h1 id="currentStatus">{this.props.isBusy ? "BUSY" : "OPEN"} </h1>
 						 		{this.props.isBusy && meetingDuration}
 	          </div>

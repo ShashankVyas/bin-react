@@ -70,7 +70,7 @@ class User extends React.Component {
 				let signIn = (
 					<a href='Javascript:void(0);'
 						onClick = {this.handleAuthClick.bind(this)}>
-						<img src={require("../images/btn_google_signin_dark_normal_web.png")} alt="Google signin"/>
+						Sign In
 					</a>
 				);
 				
